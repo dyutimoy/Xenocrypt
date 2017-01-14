@@ -1,0 +1,17 @@
+[
+{
+  "directory": "/home/dyutimoy/Xenocrypt",
+  "command": "/usr/bin/g++    -isystem /opt/ros/kinetic/include/opencv-3.1.0-dev/opencv -isystem /opt/ros/kinetic/include/opencv-3.1.0-dev  -g3 -gdwarf-2   -o CMakeFiles/conquest.dir/src/conquest.cpp.o -c /home/dyutimoy/Xenocrypt/src/conquest.cpp",
+  "file": "/home/dyutimoy/Xenocrypt/src/conquest.cpp"
+},
+{
+  "directory": "/home/dyutimoy/Xenocrypt",
+  "command": "/usr/bin/g++    -isystem /opt/ros/kinetic/include/opencv-3.1.0-dev/opencv -isystem /opt/ros/kinetic/include/opencv-3.1.0-dev  -g3 -gdwarf-2   -o CMakeFiles/pseudo.dir/src/pseudo.cpp.o -c /home/dyutimoy/Xenocrypt/src/pseudo.cpp",
+  "file": "/home/dyutimoy/Xenocrypt/src/pseudo.cpp"
+},
+{
+  "directory": "/home/dyutimoy/Xenocrypt",
+  "command": "/usr/bin/g++    -isystem /opt/ros/kinetic/include/opencv-3.1.0-dev/opencv -isystem /opt/ros/kinetic/include/opencv-3.1.0-dev  -g3 -gdwarf-2   -o CMakeFiles/crypt.dir/src/crypt.cpp.o -c /home/dyutimoy/Xenocrypt/src/crypt.cpp",
+  "file": "/home/dyutimoy/Xenocrypt/src/crypt.cpp"
+}
+]
