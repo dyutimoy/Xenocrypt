@@ -91,16 +91,16 @@ int main(int argc, char** argv)
             {
                 Scalar color(100, 0, 0 );
                 drawContours(cnt_img, contours, idx, color, CV_FILLED, 8, hierarchy );
-                cout<< idx;
+                //cout<< idx;
             }
-    
+    /*
             for (int i = 0; i < contours.size(); i++)
             {
                 vector<Point> d;
                 approxPolyDP(contours[i], d, size1, 1);
                 printf("the no of corners of %d is %li  \n", i + 1, d.size());
-            }           
-
+           }           
+*/ 
     
 
     createTrackbar( "Threshold: ", "colours", &thresh, max_thresh );
@@ -218,7 +218,7 @@ void goodFeaturesToTrack_Demo( int, void*,Mat image,Mat image_gray )
 
   /// Show what you got
   namedWindow( "goodfeatures", CV_WINDOW_AUTOSIZE );
-  imshow( "goodfeatures", copy );
+  imshow( "goodfeatures", image_gray );
 
   /// Set the neeed parameters to find the refined corners
  // Size winSize = Size( 5, 5 );

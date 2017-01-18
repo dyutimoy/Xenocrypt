@@ -103,7 +103,7 @@ clean: CMakeFiles/conquest.dir/clean
 CMakeFiles/pseudo.dir/all:
 	$(MAKE) -f CMakeFiles/pseudo.dir/build.make CMakeFiles/pseudo.dir/depend
 	$(MAKE) -f CMakeFiles/pseudo.dir/build.make CMakeFiles/pseudo.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dyutimoy/Xenocrypt/CMakeFiles --progress-num=5,6 "Built target pseudo"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dyutimoy/Xenocrypt/CMakeFiles --progress-num=7,8 "Built target pseudo"
 .PHONY : CMakeFiles/pseudo.dir/all
 
 # Include target in all.
@@ -167,6 +167,43 @@ CMakeFiles/crypt.dir/clean:
 
 # clean rule for target.
 clean: CMakeFiles/crypt.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/learn.dir
+
+# All Build rule for target.
+CMakeFiles/learn.dir/all:
+	$(MAKE) -f CMakeFiles/learn.dir/build.make CMakeFiles/learn.dir/depend
+	$(MAKE) -f CMakeFiles/learn.dir/build.make CMakeFiles/learn.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dyutimoy/Xenocrypt/CMakeFiles --progress-num=5,6 "Built target learn"
+.PHONY : CMakeFiles/learn.dir/all
+
+# Include target in all.
+all: CMakeFiles/learn.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/learn.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dyutimoy/Xenocrypt/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/learn.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dyutimoy/Xenocrypt/CMakeFiles 0
+.PHONY : CMakeFiles/learn.dir/rule
+
+# Convenience name for target.
+learn: CMakeFiles/learn.dir/rule
+
+.PHONY : learn
+
+# clean rule for target.
+CMakeFiles/learn.dir/clean:
+	$(MAKE) -f CMakeFiles/learn.dir/build.make CMakeFiles/learn.dir/clean
+.PHONY : CMakeFiles/learn.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/learn.dir/clean
 
 .PHONY : clean
 

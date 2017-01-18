@@ -21,6 +21,10 @@
           <df name="src">
           </df>
         </df>
+        <df name="learn.dir">
+          <df name="src">
+          </df>
+        </df>
         <df name="pseudo.dir">
           <df name="src">
           </df>
@@ -31,6 +35,7 @@
       <df name="src">
         <in>conquest.cpp</in>
         <in>crypt.cpp</in>
+        <in>learn.cpp</in>
         <in>pseudo.cpp</in>
       </df>
     </df>

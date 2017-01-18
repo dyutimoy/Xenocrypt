@@ -48,4 +48,5 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/conquest.dir/DependInfo.cmake"
   "CMakeFiles/pseudo.dir/DependInfo.cmake"
   "CMakeFiles/crypt.dir/DependInfo.cmake"
+  "CMakeFiles/learn.dir/DependInfo.cmake"
   )

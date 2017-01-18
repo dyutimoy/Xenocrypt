@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /home/dyutimoy/Xenocrypt
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target edit_cache
-edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
-.PHONY : edit_cache
-
-# Special rule for the target edit_cache
-edit_cache/fast: edit_cache
-
-.PHONY : edit_cache/fast
-
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -77,6 +66,17 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 
 .PHONY : rebuild_cache/fast
+
+# Special rule for the target edit_cache
+edit_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
+	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+.PHONY : edit_cache
+
+# Special rule for the target edit_cache
+edit_cache/fast: edit_cache
+
+.PHONY : edit_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -149,6 +149,19 @@ crypt/fast:
 	$(MAKE) -f CMakeFiles/crypt.dir/build.make CMakeFiles/crypt.dir/build
 .PHONY : crypt/fast
 
+#=============================================================================
+# Target rules for targets named learn
+
+# Build rule for target.
+learn: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 learn
+.PHONY : learn
+
+# fast build rule for target.
+learn/fast:
+	$(MAKE) -f CMakeFiles/learn.dir/build.make CMakeFiles/learn.dir/build
+.PHONY : learn/fast
+
 src/conquest.o: src/conquest.cpp.o
 
 .PHONY : src/conquest.o
@@ -203,6 +216,33 @@ src/crypt.cpp.s:
 	$(MAKE) -f CMakeFiles/crypt.dir/build.make CMakeFiles/crypt.dir/src/crypt.cpp.s
 .PHONY : src/crypt.cpp.s
 
+src/learn.o: src/learn.cpp.o
+
+.PHONY : src/learn.o
+
+# target to build an object file
+src/learn.cpp.o:
+	$(MAKE) -f CMakeFiles/learn.dir/build.make CMakeFiles/learn.dir/src/learn.cpp.o
+.PHONY : src/learn.cpp.o
+
+src/learn.i: src/learn.cpp.i
+
+.PHONY : src/learn.i
+
+# target to preprocess a source file
+src/learn.cpp.i:
+	$(MAKE) -f CMakeFiles/learn.dir/build.make CMakeFiles/learn.dir/src/learn.cpp.i
+.PHONY : src/learn.cpp.i
+
+src/learn.s: src/learn.cpp.s
+
+.PHONY : src/learn.s
+
+# target to generate assembly for a file
+src/learn.cpp.s:
+	$(MAKE) -f CMakeFiles/learn.dir/build.make CMakeFiles/learn.dir/src/learn.cpp.s
+.PHONY : src/learn.cpp.s
+
 src/pseudo.o: src/pseudo.cpp.o
 
 .PHONY : src/pseudo.o
@@ -236,17 +276,21 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... edit_cache"
+	@echo "... rebuild_cache"
 	@echo "... conquest"
 	@echo "... pseudo"
 	@echo "... crypt"
-	@echo "... rebuild_cache"
+	@echo "... edit_cache"
+	@echo "... learn"
 	@echo "... src/conquest.o"
 	@echo "... src/conquest.i"
 	@echo "... src/conquest.s"
 	@echo "... src/crypt.o"
 	@echo "... src/crypt.i"
 	@echo "... src/crypt.s"
+	@echo "... src/learn.o"
+	@echo "... src/learn.i"
+	@echo "... src/learn.s"
 	@echo "... src/pseudo.o"
 	@echo "... src/pseudo.i"
 	@echo "... src/pseudo.s"

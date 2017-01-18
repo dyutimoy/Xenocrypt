@@ -5,6 +5,7 @@
       <df name="src">
         <in>conquest.cpp</in>
         <in>crypt.cpp</in>
+        <in>learn.cpp</in>
         <in>pseudo.cpp</in>
       </df>
     </df>
@@ -53,6 +54,8 @@
       <item path="src/conquest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/crypt.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/learn.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/pseudo.cpp" ex="false" tool="1" flavor2="0">
       </item>

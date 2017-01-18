@@ -24,11 +24,13 @@ int main( int argc, char** argv )
   /// Convert image to gray and blur it
   cvtColor( src, src_gray, CV_BGR2GRAY );
   blur( src_gray, src_gray, Size(3,3) );
-
+  
   /// Create Window
   char* source_window = "Source";
+  Mat resize_src(src.rows/10,src.cols/10,CV_8UC3);
+  resize(src,resize_src,resize_src.size(),0,0,CV_INTER_AREA);
   namedWindow( source_window, CV_WINDOW_AUTOSIZE );
-  imshow( source_window, src );
+  imshow( source_window, resize_src );
 
   createTrackbar( " Canny thresh:", "Source", &thresh, max_thresh, thresh_callback );
   thresh_callback( 0, 0 );
@@ -40,7 +42,8 @@ int main( int argc, char** argv )
 /** @function thresh_callback */
 void thresh_callback(int, void* )
 {
-  Mat canny_output;
+  Mat canny_output,lines,cdst;
+  Mat resize_img(src_gray.rows/10,src_gray.cols/10,CV_8UC1);
   vector<vector<Point> > contours;
   vector<Vec4i> hierarchy;
 
@@ -67,12 +70,35 @@ void thresh_callback(int, void* )
        drawContours( drawing, contours, i, color, 2, 8, hierarchy, 0, Point() );
        circle( drawing, mc[i], 4, color, -1, 8, 0 );
      }
-
+  resize(drawing,resize_img,resize_img.size(),0,0,CV_INTER_AREA);
   /// Show in a window
   namedWindow( "Contours", CV_WINDOW_AUTOSIZE );
-  imshow( "Contours", drawing );
-
-  /// Calculate the area with the moments 00 and compare with the result of the OpenCV function
+  imshow( "Contours", resize_img );
+  
+  /*
+  //hough transform
+  vector<Vec2f>lines;
+  HoughLines(canny_output,lines, 1, CV_PI/180, 100, 0, 0 );
+  cvtColor(canny_output, cdst, CV_GRAY2BGR);
+  
+  for( size_t i = 0; i < lines.size(); i++ )
+  {
+    float rho = lines[i][0], theta = lines[i][1];
+    Point pt1, pt2;
+    double a = cos(theta), b = sin(theta);
+    double x0 = a*rho, y0 = b*rho;
+    pt1.x = cvRound(x0 + 1000*(-b));
+    pt1.y = cvRound(y0 + 1000*(a));
+    pt2.x = cvRound(x0 - 1000*(-b));
+    pt2.y = cvRound(y0 - 1000*(a));
+    line( cdst, pt1, pt2, Scalar(0,0,255), 3, CV_AA);
+  }
+  
+  namedWindow( "lines", CV_WINDOW_AUTOSIZE );
+  imshow( "lines", cdst );
+  
+  
+  /*  /// Calculate the area with the moments 00 and compare with the result of the OpenCV function
   printf("\t Info: Area and Contour Length \n");
   for( int i = 0; i< contours.size(); i++ )
      {
@@ -81,4 +107,5 @@ void thresh_callback(int, void* )
        drawContours( drawing, contours, i, color, 2, 8, hierarchy, 0, Point() );
        circle( drawing, mc[i], 4, color, -1, 8, 0 );
      }
+    */
 }
