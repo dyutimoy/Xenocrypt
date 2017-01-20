@@ -1,128 +1,61 @@
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui.hpp"
+#include "opencv2/imgproc.hpp"
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#define krnl 3
-#define THRESHOLD 127
-#define max 100
-
-int ctr = 0;
-int help[max][max];
-
 using namespace cv;
 using namespace std;
-
-void d(String windowname, Mat image)
+static void help()
 {
-	namedWindow(windowname, CV_WINDOW_AUTOSIZE);
-	imshow(windowname, image);
+    cout << "This program demonstrates finding the minimum enclosing box, triangle or circle of a set\n"
+         << "of points using functions: minAreaRect() minEnclosingTriangle() minEnclosingCircle().\n"
+         << "Random points are generated and then enclosed.\n\n"
+         << "Press ESC, 'q' or 'Q' to exit and any other key to regenerate the set of points.\n\n"
+         << "Call:\n"
+         << "./minarea\n"
+         << "Using OpenCV v" << CV_VERSION << "\n" << endl;
 }
-
-Mat r(String filename, int type = 1)
+int main( int /*argc*/, char** /*argv*/ )
 {
-	if (type)
-		return imread(filename);
-	else
-		return imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
-}
-
-Mat hgs(Mat img)
-{
-	Mat imggs1(img.rows, img.cols, CV_8UC1, 255);  //human eye
-	for (int i = 0; i < img.rows; i++)
-	{
-		for (int j = 0; j < img.cols; j++)
-		{
-			imggs1.at<uchar>(i, j) = img.at<Vec3b>(i, j)[0] * 0.114 + img.at<Vec3b>(i, j)[1] * 0.587 + img.at<Vec3b>(i, j)[2] * 0.299;
-		}
-	}
-	return imggs1;
-}
-
-Mat binary(Mat img1)
-{
-	Mat img2(img1.rows, img1.cols, CV_8UC1, 255);  //avg
-	for (int i = 0; i < img1.rows; i++)
-	{
-		for (int j = 0; j < img1.cols; j++)
-		{
-			if (img1.at<uchar>(i, j)>THRESHOLD)
-				img2.at<uchar>(i, j) = 255;
-			else
-				img2.at<uchar>(i, j) = 0;
-		}
-	}
-	return img2;
-}
-
-void blobptdetdfsr(int i, int j, Mat img,Mat &aux)
-{
-	aux.at<uchar>(i, j) = ctr;
-	for (int i1 = i - krnl / 2; i1 <= i + krnl / 2; i1++)
-	{
-		for (int j1 = j - krnl / 2; j1 <= j + krnl / 2; j1++)
-		{
-			if (i1 < 0 || i1 >= img.rows || j1 < 0 || j1 >= img.cols)
-				continue;
-			if (img.at<uchar>(i1, j1) == 255 && aux.at<uchar>(i1, j1) == 0)
-			{
-				blobptdetdfsr(i1, j1, img, aux);
-			}
-		}
-	}
-}
-
-void blobdetdfsr(Mat img,Mat &aux)
-{
-	for (int i = 0; i < img.rows; i++)
-	{
-		for (int j = 0; j < img.cols; j++)
-		{
-			if (img.at<uchar>(i, j) == 255 && aux.at<uchar>(i, j) == 0)
-			{
-				ctr= ctr +50;
-				blobptdetdfsr(i,j,img,aux);
-			}
-		}
-	}
-}
-
-void init(Mat img)
-{
-	for (int i = 0; i < img.rows; i++)
-	for (int j = 0; j < img.cols; j++)
-		img.at<uchar>(i, j) = 0;
-}
-
-void printarr(Mat img)
-{
-	for (int i = 0; i < img.rows; i++)
-	{
-		for (int j = 0; j < img.cols; j++)
-		{
-			cout <<(int) img.at<uchar>(i, j);
-		}
-		cout << endl;
-	}
-}
-
-int main()
-{
-	int th = 127;
-	Mat img1 = r("binedge.png");
-	d("Original image", img1);
-	Mat img2 = hgs(img1);
-	d("Grey Scale Image for Human Eye", img2);
-	Mat img = binary(img2);
-	d("Binary Image", img);
-	Mat aux = img.clone();
-	init(aux);
-	blobdetdfsr(img, aux);
-	printarr(aux);
-        imshow("aux",aux);
-	int iKey = waitKey(50);
-	waitKey(0);
-	return 0;
+    help();
+    Mat img(500, 500, CV_8UC3);
+    RNG& rng = theRNG();
+    for(;;)
+    {
+        int i, count = rng.uniform(1, 101);
+        vector<Point> points;
+        // Generate a random set of points
+        for( i = 0; i < count; i++ )
+        {
+            Point pt;
+            pt.x = rng.uniform(img.cols/4, img.cols*3/4);
+            pt.y = rng.uniform(img.rows/4, img.rows*3/4);
+            points.push_back(pt);
+        }
+        // Find the minimum area enclosing bounding box
+        RotatedRect box = minAreaRect(Mat(points));
+        // Find the minimum area enclosing triangle
+        vector<Point2f> triangle;
+        minEnclosingTriangle(points, triangle);
+        // Find the minimum area enclosing circle
+        Point2f center, vtx[4];
+        float radius = 0;
+        minEnclosingCircle(Mat(points), center, radius);
+        box.points(vtx);
+        img = Scalar::all(0);
+        // Draw the points
+        for( i = 0; i < count; i++ )
+            circle( img, points[i], 3, Scalar(0, 0, 255), FILLED, LINE_AA );
+        // Draw the bounding box
+        for( i = 0; i < 4; i++ )
+            line(img, vtx[i], vtx[(i+1)%4], Scalar(0, 255, 0), 1, LINE_AA);
+        // Draw the triangle
+        for( i = 0; i < 3; i++ )
+            line(img, triangle[i], triangle[(i+1)%3], Scalar(255, 255, 0), 1, LINE_AA);
+        // Draw the circle
+        circle(img, center, cvRound(radius), Scalar(0, 255, 255), 1, LINE_AA);
+        imshow( "Rectangle, triangle & circle", img );
+        char key = (char)waitKey();
+        if( key == 27 || key == 'q' || key == 'Q' ) // 'ESC'
+            break;
+    }
+    return 0;
 }

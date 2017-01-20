@@ -34,12 +34,10 @@ CMakeFiles/learn.dir/src/learn.cpp.o: /opt/ros/kinetic/include/opencv-3.1.0-dev/
 CMakeFiles/learn.dir/src/learn.cpp.o: /opt/ros/kinetic/include/opencv-3.1.0-dev/opencv2/flann/defines.h
 CMakeFiles/learn.dir/src/learn.cpp.o: /opt/ros/kinetic/include/opencv-3.1.0-dev/opencv2/flann/miniflann.hpp
 CMakeFiles/learn.dir/src/learn.cpp.o: /opt/ros/kinetic/include/opencv-3.1.0-dev/opencv2/highgui.hpp
-CMakeFiles/learn.dir/src/learn.cpp.o: /opt/ros/kinetic/include/opencv-3.1.0-dev/opencv2/highgui/highgui.hpp
 CMakeFiles/learn.dir/src/learn.cpp.o: /opt/ros/kinetic/include/opencv-3.1.0-dev/opencv2/highgui/highgui_c.h
 CMakeFiles/learn.dir/src/learn.cpp.o: /opt/ros/kinetic/include/opencv-3.1.0-dev/opencv2/imgcodecs.hpp
 CMakeFiles/learn.dir/src/learn.cpp.o: /opt/ros/kinetic/include/opencv-3.1.0-dev/opencv2/imgcodecs/imgcodecs_c.h
 CMakeFiles/learn.dir/src/learn.cpp.o: /opt/ros/kinetic/include/opencv-3.1.0-dev/opencv2/imgproc.hpp
-CMakeFiles/learn.dir/src/learn.cpp.o: /opt/ros/kinetic/include/opencv-3.1.0-dev/opencv2/imgproc/imgproc.hpp
 CMakeFiles/learn.dir/src/learn.cpp.o: /opt/ros/kinetic/include/opencv-3.1.0-dev/opencv2/imgproc/imgproc_c.h
 CMakeFiles/learn.dir/src/learn.cpp.o: /opt/ros/kinetic/include/opencv-3.1.0-dev/opencv2/imgproc/types_c.h
 CMakeFiles/learn.dir/src/learn.cpp.o: /opt/ros/kinetic/include/opencv-3.1.0-dev/opencv2/ml.hpp

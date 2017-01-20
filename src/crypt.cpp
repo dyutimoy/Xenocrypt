@@ -15,6 +15,7 @@ RNG rng(12345);
 int size = 3;
 int maxCorners=25;
 int ctr=0;
+int ctr_n =0;
 /// Function header
 void thresh_callback(int, void* );
 
@@ -51,8 +52,39 @@ void dfs(Mat img,Mat &aux)
 		}
 	}
 }
-
-
+/*
+void dfs_ker_n(int i, int j, Mat img,Mat &aux_n)
+{
+	aux_n.at<Vec3b>(i, j) = ctr;
+        
+	for (int i1 = i - size / 2; i1 <= i + size / 2; i1++)
+	{
+		for (int j1 = j - size / 2; j1 <= j + size / 2; j1++)
+		{
+			if (i1 < 0 || i1 >= img.rows || j1 < 0 || j1 >= img.cols)
+				continue;
+			if (img.at<uchar>(i1, j1) > 0 && aux.at<uchar>(i1, j1) == 0)
+			{
+				dfs_ker(i1, j1, img, aux);
+			}
+		}
+	}
+}
+dfs_n(Mat img,Mat &aux_n)
+{
+    for (int i = 0; i < img.rows; i++)
+	{
+		for (int j = 0; j < img.cols; j++)
+		{
+			if (img.at<uchar>(i, j) > 0 && aux_n.at<Vec3b>(i, j)[0] == 0)
+			{
+				 ctr_n = ctr_n +50;
+				dfs_ker(i,j,img,aux_n);
+			}
+		}
+	}
+}
+*/
 int Isvalid(Mat img, int a, int b)
 {
 	if (a < 0 || a >= img.rows || b < 0 || b >= img.cols)
@@ -65,24 +97,48 @@ int Isvalid(Mat img, int a, int b)
 /** @function main */
 int main( int argc, char** argv )
 {
-  /// Load source image and convert it to gray
-  src = imread( argv[1], 1 );
-  Mat resize_src(src.rows/7,src.cols/7,CV_8UC3);
+ 
+    /// Load source image and con
+        //VideoCapture vid("conquest_sample_arena.webm");
+        VideoCapture webcam(0);
+       
+	Mat frame;
+	double tframe;
+	double cframe;
+	//tframe = vid.get(CV_CAP_PROP_FRAME_COUNT);
+	//cframe = vid.get(CV_CAP_PROP_POS_FRAMES);
+	
+	while(1)
+        {
+            
+            
+		 webcam.read(src);
+		 Mat resize_src(src.rows,src.cols,CV_8UC3);
   /// Convert image to gray and blur it
-  cvtColor( src, src_gray, CV_BGR2GRAY );
-  blur( src_gray, src_gray, Size(3,3) );
+                 cvtColor( src, src_gray, CV_BGR2GRAY );
+                blur( src_gray, src_gray, Size(3,3) );
 
   /// Create Window
-  char* source_window = "Source";
-  namedWindow( source_window, CV_WINDOW_AUTOSIZE );
-  resize(src,resize_src,resize_src.size(),0,0,CV_INTER_AREA);
-  imshow( source_window, resize_src );
+                 char* source_window = "Source";
+                 namedWindow( source_window, CV_WINDOW_AUTOSIZE );
+                  resize(src,resize_src,resize_src.size(),0,0,CV_INTER_AREA);
+                  imshow( source_window, resize_src );
   
 
-  createTrackbar( " Threshold:", "Source", &thresh, max_thresh, thresh_callback );
-  thresh_callback( 0, 0 );
-
-  waitKey(0);
+                
+                thresh_callback( 0, 0 );
+                
+              // int k = 0;
+            //cout << "give value of k";
+            //cin >>  k ;
+               
+                   int iKey = waitKey(50);
+                    if (iKey == 27)break;
+		
+	}
+    
+    
+   
   return(0);
 }
 
@@ -90,16 +146,16 @@ int main( int argc, char** argv )
 void thresh_callback(int, void* )
 {
   Mat canny_output,drawing_edge;
-  Mat resize_draw(src_gray.rows/7,src_gray.cols/7,CV_8UC1);
+  Mat resize_draw(src_gray.rows,src_gray.cols,CV_8UC1);
   vector<vector<Point> > contours;
   
   vector<Vec4i> hierarchy;
-  vector<Vec4i> new_hierarchy;
+  
 
   /// Detect edges using Threshold
   Canny( src_gray, canny_output, thresh, thresh*2, 3 );
   /// Find contours
-  findContours( canny_output, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
+  findContours( canny_output, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
 
   /// Approximate contours to polygons + get bounding rects and circles
   
@@ -137,17 +193,17 @@ void thresh_callback(int, void* )
   for( int i = 0; i< contours.size(); i++ )
      {
        Scalar color = Scalar(255,255,255 );
-       drawContours( drawing, contours_poly, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
+       drawContours( drawing, contours_poly, i, color, CV_FILLED, 8, vector<Vec4i>(), 0, Point() );
       // drawContours( drawing, hull, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
        //rectangle( drawing, boundRect[i].tl(), boundRect[i].br(), color, 2, 8, 0 );
-       circle( drawing, mc[i], 4, color, -1, 8, 0 );
+       //circle( drawing, mc[i], 4, color, -1, 8, 0 );
       // circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
        count = count + 20;
      }
   
  
   resize(drawing,resize_draw,resize_draw.size(),0,0,CV_INTER_AREA);
-   Mat resize_gray = Mat::zeros( resize_draw.size(), CV_8UC1 );
+  Mat resize_gray = Mat::zeros( resize_draw.size(), CV_8UC1 );
   for (int i = 0; i < resize_draw.rows; i++)
 	{
 		for (int j = 0; j < resize_draw.cols; j++)
@@ -164,45 +220,57 @@ void thresh_callback(int, void* )
   
   dfs(resize_gray,img_dfs);
   
-/*
-  /// Parameters for Shi-Tomasi algorithm
-  vector<Point2f> corners;
-  double qualityLevel = 0.01;
-  double minDistance = 50;
-  int blockSize = 3;
-  bool useHarrisDetector = true;
-  double k = 0.04;
-
-  /// Copy the source image
-  Mat copy,resize_gray;
-  copy = resize_draw.clone();
+   /*
+  Mat final_img;
+  vector<vector<Point> > new_contours;
   
-  cvtColor( resize_draw, resize_gray, CV_BGR2GRAY );
+  vector<Vec4i> new_hierarchy;
+  
+  /// Detect edges using Threshold
+  
+  /// Find contours
+  findContours( img_dfs, new_contours, new_hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
+  
+  vector<vector<Point> > new_contours_poly( new_contours.size() );
+  vector<Rect> new_boundRect( new_contours.size() );
+  vector<Point2f>new_center( new_contours.size() );
+  vector<float>new_radius( new_contours.size() );
+  
+  
+  vector<Moments> new_mu(new_contours.size() );
+  for( int i = 0; i < new_contours.size(); i++ )
+     { new_mu[i] = moments( new_contours[i], false ); }
 
-  /// Apply corner detection
-  goodFeaturesToTrack( resize_gray,
-                       corners,
-                       maxCorners,
-                       qualityLevel,
-                       minDistance,
-                       Mat(),
-                       blockSize,
-                       useHarrisDetector,
-                       k );
+  ///  Get the mass centers:
+  vector<Point2f> new_mc( new_contours.size() );
+  for( int i = 0; i < new_contours.size(); i++ )
+     { new_mc[i] = Point2f( new_mu[i].m10/new_mu[i].m00 , new_mu[i].m01/new_mu[i].m00 ); }
+  
+  
+  for( int i = 0; i < new_contours.size(); i++ )
+     { approxPolyDP( Mat(new_contours[i]), new_contours_poly[i], 3, true );
+       new_boundRect[i] = boundingRect( Mat(new_contours_poly[i]) );
+      // minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
+     }
 
-
-  /// Draw corners detected
-  cout<<"** Number of corners detected: "<<corners.size()<<endl;
-  int r = 4;
-  for( int i = 0; i < corners.size(); i++ )
-    { circle( copy, corners[i], r, Scalar(100,0,0), -1, 8, 0 ); 
-       cout<<" -- Refined Corner ["<<i<<"]  ("<< corners[i].x<<","<<corners[i].y<<")"<<endl; 
-
-    }
-*/
-  /// Show what you got
+   
+  /// Draw polygonal contour + bonding rects + circles
+  Mat new_drawing = Mat::zeros( resize_draw.size(), CV_8UC3 );
+  
+  int new_count = 0;
+  for( int i = 0; i< new_contours.size(); i++ )
+     {
+       Scalar color = Scalar(255,255,255 );
+       drawContours( new_drawing, new_contours_poly, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
+      // drawContours( drawing, hull, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
+       //rectangle( drawing, boundRect[i].tl(), boundRect[i].br(), color, 2, 8, 0 );
+       circle( new_drawing, new_mc[i], 4, color, -1, 8, 0 );
+      // circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
+       new_count = new_count + 20;
+     }  
+ */
   namedWindow( "goodfeatures", CV_WINDOW_AUTOSIZE );
-  imshow( "goodfeatures",img_dfs );
+ imshow( "goodfeatures",img_dfs );
   
   namedWindow( "Contours", CV_WINDOW_AUTOSIZE );
   
