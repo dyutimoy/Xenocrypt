@@ -4,108 +4,134 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+
 using namespace cv;
 using namespace std;
 
-Mat src; Mat src_gray;
-int thresh = 100;
-int max_thresh = 255;
-RNG rng(12345);
 
-/// Function header
-void thresh_callback(int, void* );
 
-/** @function main */
-int main( int argc, char** argv )
+void displayimage(Mat image, String windowname)
 {
-  /// Load source image and convert it to gray
-  src = imread( argv[1], 1 );
-
-  /// Convert image to gray and blur it
-  cvtColor( src, src_gray, CV_BGR2GRAY );
-  blur( src_gray, src_gray, Size(3,3) );
-  
-  /// Create Window
-  char* source_window = "Source";
-  Mat resize_src(src.rows/10,src.cols/10,CV_8UC3);
-  resize(src,resize_src,resize_src.size(),0,0,CV_INTER_AREA);
-  namedWindow( source_window, CV_WINDOW_AUTOSIZE );
-  imshow( source_window, resize_src );
-
-  createTrackbar( " Canny thresh:", "Source", &thresh, max_thresh, thresh_callback );
-  thresh_callback( 0, 0 );
-
-  waitKey(0);
-  return(0);
+	namedWindow(windowname, CV_WINDOW_AUTOSIZE);
+	imshow(windowname, image);
 }
 
-/** @function thresh_callback */
-void thresh_callback(int, void* )
+Mat Input()
 {
-  Mat canny_output,lines,cdst;
-  Mat resize_img(src_gray.rows/10,src_gray.cols/10,CV_8UC1);
-  vector<vector<Point> > contours;
-  vector<Vec4i> hierarchy;
+	Mat image;
+	image = imread("hsv.png");
+	return (image);
+}
+Mat createimghumangrey(Mat img)
+{
 
-  /// Detect edges using canny
-  Canny( src_gray, canny_output, thresh, thresh*2, 3 );
-  /// Find contours
-  findContours( canny_output, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
+	Mat humangrey(img.rows, img.cols, CV_8UC1);
 
-  /// Get the moments
-  vector<Moments> mu(contours.size() );
-  for( int i = 0; i < contours.size(); i++ )
-     { mu[i] = moments( contours[i], false ); }
+	for (int i = 0; i < img.rows; i++)
+	{
+		for (int j = 0; j < img.cols; j++)
+		{
+			int val = img.at<Vec3b>(i, j)[0] * 0.114 + img.at<Vec3b>(i, j)[1] * 0.587 + img.at<Vec3b>(i, j)[2] * 0.299;
+			humangrey.at<uchar>(i, j) = val;
 
-  ///  Get the mass centers:
-  vector<Point2f> mc( contours.size() );
-  for( int i = 0; i < contours.size(); i++ )
-     { mc[i] = Point2f( mu[i].m10/mu[i].m00 , mu[i].m01/mu[i].m00 ); }
+		}
+	}
+	//namedWindow("humanscale", CV_WINDOW_AUTOSIZE);
+	//namedWindow("colour", CV_WINDOW_AUTOSIZE);
+	//imshow("humanscale", humangrey);
+	//imshow("colour", img);
+	return(humangrey);
+}
+Mat creatingbinary(Mat img1,int threshold)
+{
+	Mat binimg(img1.rows, img1.cols, CV_8UC1);
+	for (int i = 0; i < img1.rows; i++)
+	{
+		for (int j = 0; j < img1.cols; j++)
+		{
+			int val = img1.at<uchar>(i, j);
+			if (val>threshold)
+			{
+				binimg.at<uchar>(i, j) = 255;
 
-  /// Draw contours
-  Mat drawing = Mat::zeros( canny_output.size(), CV_8UC3 );
-  for( int i = 0; i< contours.size(); i++ )
-     {
-       Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
-       drawContours( drawing, contours, i, color, 2, 8, hierarchy, 0, Point() );
-       circle( drawing, mc[i], 4, color, -1, 8, 0 );
-     }
-  resize(drawing,resize_img,resize_img.size(),0,0,CV_INTER_AREA);
-  /// Show in a window
-  namedWindow( "Contours", CV_WINDOW_AUTOSIZE );
-  imshow( "Contours", resize_img );
-  
-  /*
-  //hough transform
-  vector<Vec2f>lines;
-  HoughLines(canny_output,lines, 1, CV_PI/180, 100, 0, 0 );
-  cvtColor(canny_output, cdst, CV_GRAY2BGR);
-  
-  for( size_t i = 0; i < lines.size(); i++ )
-  {
-    float rho = lines[i][0], theta = lines[i][1];
-    Point pt1, pt2;
-    double a = cos(theta), b = sin(theta);
-    double x0 = a*rho, y0 = b*rho;
-    pt1.x = cvRound(x0 + 1000*(-b));
-    pt1.y = cvRound(y0 + 1000*(a));
-    pt2.x = cvRound(x0 - 1000*(-b));
-    pt2.y = cvRound(y0 - 1000*(a));
-    line( cdst, pt1, pt2, Scalar(0,0,255), 3, CV_AA);
-  }
-  
-  namedWindow( "lines", CV_WINDOW_AUTOSIZE );
-  imshow( "lines", cdst );
-  
-  
-  /*  /// Calculate the area with the moments 00 and compare with the result of the OpenCV function
-  printf("\t Info: Area and Contour Length \n");
-  for( int i = 0; i< contours.size(); i++ )
-     {
-       printf(" * Contour[%d] - Area (M_00) = %.2f - Area OpenCV: %.2f - Length: %.2f \n", i, mu[i].m00, contourArea(contours[i]), arcLength( contours[i], true ) );
-       Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
-       drawContours( drawing, contours, i, color, 2, 8, hierarchy, 0, Point() );
-       circle( drawing, mc[i], 4, color, -1, 8, 0 );
-     }
-    */
+			}
+			else { binimg.at<uchar>(i, j) = 0; }
+
+		}
+	}
+	return (binimg);
+}
+/*int decidethresold(Mat img2)
+{
+	int thres, A[256] = { 0 };
+	for (int i = 0; i < img2.rows; i++)
+	{
+		for (int j = 0; j < img2.cols; j++)
+		{
+			A[img2.at<uchar>(i, j)]++;
+		}
+	}
+	int temp = 0;
+	for (int k = 0; k < 256; k++)
+	{
+		
+		temp += A[k];
+		if (temp >= (img2.rows*img2.cols) / 2)
+		{
+			thres = k;
+			return thres;
+		}
+	}
+}*/
+
+Mat lochsv(Mat img,int hx,int hn ,int sx ,int sn,int vx, int vn)
+{
+	Mat dechsv(img.rows, img.cols, CV_8UC1,Scalar(0));
+
+	for (int i = 0; i < img.rows; i++)
+	{
+		for (int j = 0; j < img.cols; j++)
+		{
+			if (img.at<Vec3b>(i, j)[0] <= hx && img.at<Vec3b>(i, j)[0] >= hn &&img.at<Vec3b>(i, j)[1] < sx &&img.at<Vec3b>(i, j)[1] > sn &&img.at<Vec3b>(i, j)[2] < vx &&img.at<Vec3b>(i, j)[2] > vn)
+				dechsv.at<uchar>(i, j) = 255;
+		}
+	}return dechsv;
+}
+
+
+int main()
+{
+	
+	Mat image;
+	Mat hsvimg,binaryimg;
+	 VideoCapture vid("conquest_sample_arena.webm");
+	
+	//grayimg = createimghumangrey(hsvimg);
+	int thresold = 0, hmax = 0, hmin = 0, smax = 0, smin = 0, vmax=0, vmin=0;
+	namedWindow("binary",CV_WINDOW_AUTOSIZE);
+	//printf("%d", thresold);
+	//createTrackbar("threshold1", "binary", &thresold, 255);
+	createTrackbar("hmax", "binary", &hmax, 180);
+	createTrackbar("hmin", "binary", &hmin, 180);
+	createTrackbar("vmax", "binary", &vmax, 255);
+	createTrackbar("vmin", "binary", &vmin, 255);
+	createTrackbar("smax", "binary", &smax, 255);
+	createTrackbar("smin", "binary", &smin, 255);
+	
+	vid >> image;
+	while (1)
+	{       
+            
+                cvtColor(image, hsvimg, CV_BGR2HSV);
+            
+                displayimage(image, "colour");
+		binaryimg = lochsv(hsvimg, hmax, hmin, smax, smin, vmax, vmin);
+		
+		imshow("binary",binaryimg);
+
+		int iKey = waitKey(50);
+		if (iKey == 27)break;
+	}
+	return 0;
 }

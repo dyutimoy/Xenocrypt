@@ -25,7 +25,13 @@
           <df name="src">
           </df>
         </df>
+        <df name="Progress">
+        </df>
         <df name="pseudo.dir">
+          <df name="src">
+          </df>
+        </df>
+        <df name="xeno.dir">
           <df name="src">
           </df>
         </df>
@@ -37,6 +43,7 @@
         <in>crypt.cpp</in>
         <in>learn.cpp</in>
         <in>pseudo.cpp</in>
+        <in>xeno.cpp</in>
       </df>
     </df>
   </logicalFolder>

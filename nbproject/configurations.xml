@@ -7,6 +7,7 @@
         <in>crypt.cpp</in>
         <in>learn.cpp</in>
         <in>pseudo.cpp</in>
+        <in>xeno.cpp</in>
       </df>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -53,11 +54,13 @@
       </makefileType>
       <item path="src/conquest.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="src/crypt.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/crypt.cpp" ex="false" tool="1" flavor2="4">
       </item>
-      <item path="src/learn.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/learn.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="src/pseudo.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/xeno.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
   </confs>

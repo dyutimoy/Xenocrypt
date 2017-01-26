@@ -99,21 +99,23 @@ int main( int argc, char** argv )
 {
  
     /// Load source image and con
-        //VideoCapture vid("conquest_sample_arena.webm");
-        VideoCapture webcam(0);
+       VideoCapture vid("conquest_sample_arena.webm");
+        //VideoCapture webcam(0);
        
 	Mat frame;
 	double tframe;
 	double cframe;
-	//tframe = vid.get(CV_CAP_PROP_FRAME_COUNT);
-	//cframe = vid.get(CV_CAP_PROP_POS_FRAMES);
+	tframe = vid.get(CV_CAP_PROP_FRAME_COUNT);
+	cframe = vid.get(CV_CAP_PROP_POS_FRAMES);
 	
 	while(1)
         {
             
-            
-		 webcam.read(src);
-		 Mat resize_src(src.rows,src.cols,CV_8UC3);
+                src = imread( argv[1]);
+		 //webcam.read(src);
+                //vid >> src;
+                 
+		 Mat resize_src(src.rows/7,src.cols/7,CV_8UC3);
   /// Convert image to gray and blur it
                  cvtColor( src, src_gray, CV_BGR2GRAY );
                 blur( src_gray, src_gray, Size(3,3) );
@@ -146,7 +148,7 @@ int main( int argc, char** argv )
 void thresh_callback(int, void* )
 {
   Mat canny_output,drawing_edge;
-  Mat resize_draw(src_gray.rows,src_gray.cols,CV_8UC1);
+  Mat resize_draw(src_gray.rows/7,src_gray.cols/7,CV_8UC1);
   vector<vector<Point> > contours;
   
   vector<Vec4i> hierarchy;
@@ -193,10 +195,12 @@ void thresh_callback(int, void* )
   for( int i = 0; i< contours.size(); i++ )
      {
        Scalar color = Scalar(255,255,255 );
-       drawContours( drawing, contours_poly, i, color, CV_FILLED, 8, vector<Vec4i>(), 0, Point() );
+       drawContours( drawing, contours_poly, i, color,1, 8, vector<Vec4i>(), 0, Point() );
       // drawContours( drawing, hull, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
        //rectangle( drawing, boundRect[i].tl(), boundRect[i].br(), color, 2, 8, 0 );
-       //circle( drawing, mc[i], 4, color, -1, 8, 0 );
+       cout << mc[i].x<< "  "<<i<<"   "<<"\n";
+               cout <<mc[i].y << "\n";
+       circle( drawing, mc[i], 4, color, -1, 8, 0 );
       // circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
        count = count + 20;
      }
@@ -220,7 +224,7 @@ void thresh_callback(int, void* )
   
   dfs(resize_gray,img_dfs);
   
-   /*
+   
   Mat final_img;
   vector<vector<Point> > new_contours;
   
@@ -261,16 +265,17 @@ void thresh_callback(int, void* )
   for( int i = 0; i< new_contours.size(); i++ )
      {
        Scalar color = Scalar(255,255,255 );
-       drawContours( new_drawing, new_contours_poly, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
+      // drawContours( new_drawing, new_contours_poly, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
       // drawContours( drawing, hull, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
-       //rectangle( drawing, boundRect[i].tl(), boundRect[i].br(), color, 2, 8, 0 );
-       circle( new_drawing, new_mc[i], 4, color, -1, 8, 0 );
+       rectangle( new_drawing, boundRect[i].tl(), boundRect[i].br(), color, 2, 8, 0 );
+      // circle( new_drawing, new_mc[i], 4, color, -1, 8, 0 );
+          
       // circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
        new_count = new_count + 20;
      }  
- */
+ 
   namedWindow( "goodfeatures", CV_WINDOW_AUTOSIZE );
- imshow( "goodfeatures",img_dfs );
+ imshow( "goodfeatures",new_drawing );
   
   namedWindow( "Contours", CV_WINDOW_AUTOSIZE );
   
@@ -282,4 +287,5 @@ void thresh_callback(int, void* )
  // imshow( "final",drawing_edge );
     
 }
+
 

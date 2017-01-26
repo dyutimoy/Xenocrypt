@@ -137,6 +137,19 @@ pseudo/fast:
 .PHONY : pseudo/fast
 
 #=============================================================================
+# Target rules for targets named xeno
+
+# Build rule for target.
+xeno: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 xeno
+.PHONY : xeno
+
+# fast build rule for target.
+xeno/fast:
+	$(MAKE) -f CMakeFiles/xeno.dir/build.make CMakeFiles/xeno.dir/build
+.PHONY : xeno/fast
+
+#=============================================================================
 # Target rules for targets named crypt
 
 # Build rule for target.
@@ -270,6 +283,33 @@ src/pseudo.cpp.s:
 	$(MAKE) -f CMakeFiles/pseudo.dir/build.make CMakeFiles/pseudo.dir/src/pseudo.cpp.s
 .PHONY : src/pseudo.cpp.s
 
+src/xeno.o: src/xeno.cpp.o
+
+.PHONY : src/xeno.o
+
+# target to build an object file
+src/xeno.cpp.o:
+	$(MAKE) -f CMakeFiles/xeno.dir/build.make CMakeFiles/xeno.dir/src/xeno.cpp.o
+.PHONY : src/xeno.cpp.o
+
+src/xeno.i: src/xeno.cpp.i
+
+.PHONY : src/xeno.i
+
+# target to preprocess a source file
+src/xeno.cpp.i:
+	$(MAKE) -f CMakeFiles/xeno.dir/build.make CMakeFiles/xeno.dir/src/xeno.cpp.i
+.PHONY : src/xeno.cpp.i
+
+src/xeno.s: src/xeno.cpp.s
+
+.PHONY : src/xeno.s
+
+# target to generate assembly for a file
+src/xeno.cpp.s:
+	$(MAKE) -f CMakeFiles/xeno.dir/build.make CMakeFiles/xeno.dir/src/xeno.cpp.s
+.PHONY : src/xeno.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -279,6 +319,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... conquest"
 	@echo "... pseudo"
+	@echo "... xeno"
 	@echo "... crypt"
 	@echo "... edit_cache"
 	@echo "... learn"
@@ -294,6 +335,9 @@ help:
 	@echo "... src/pseudo.o"
 	@echo "... src/pseudo.i"
 	@echo "... src/pseudo.s"
+	@echo "... src/xeno.o"
+	@echo "... src/xeno.i"
+	@echo "... src/xeno.s"
 .PHONY : help
 
 

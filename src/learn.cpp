@@ -3,59 +3,46 @@
 #include <iostream>
 using namespace cv;
 using namespace std;
-static void help()
-{
-    cout << "This program demonstrates finding the minimum enclosing box, triangle or circle of a set\n"
-         << "of points using functions: minAreaRect() minEnclosingTriangle() minEnclosingCircle().\n"
-         << "Random points are generated and then enclosed.\n\n"
-         << "Press ESC, 'q' or 'Q' to exit and any other key to regenerate the set of points.\n\n"
-         << "Call:\n"
-         << "./minarea\n"
-         << "Using OpenCV v" << CV_VERSION << "\n" << endl;
+
+void drawStuff();
+void drawAllTriangles(Mat&, const vector< vector<Point> >&);
+
+Mat img_rgb,img_gray,canny_output,drawing;
+
+int thresh = 100;
+int max_thresh = 255;
+
+int main(int argc, char** argv){
+    img_rgb  = imread(argv[1],1);
+    cvtColor(img_rgb,img_gray,CV_RGB2GRAY);
+    imshow("InputImage",img_rgb);
+    drawStuff();
+    waitKey(0);
 }
-int main( int /*argc*/, char** /*argv*/ )
-{
-    help();
-    Mat img(500, 500, CV_8UC3);
-    RNG& rng = theRNG();
-    for(;;)
-    {
-        int i, count = rng.uniform(1, 101);
-        vector<Point> points;
-        // Generate a random set of points
-        for( i = 0; i < count; i++ )
-        {
-            Point pt;
-            pt.x = rng.uniform(img.cols/4, img.cols*3/4);
-            pt.y = rng.uniform(img.rows/4, img.rows*3/4);
-            points.push_back(pt);
+
+void drawStuff(){
+    vector<vector<Point> > contours;
+    vector<Vec4i> hierarchy;
+
+    Canny( img_gray, canny_output, thresh, thresh*2, 3 );
+    imshow("Canny",canny_output);
+    findContours( canny_output, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
+    drawing = Mat::zeros( canny_output.size(), CV_8UC3 );
+
+    drawAllTriangles(drawing,contours);
+    imshow("Triangles",drawing);
+}
+
+void drawAllTriangles(Mat& img, const vector< vector<Point> >& contours){
+    vector<Point> approxTriangle;
+    for(size_t i = 0; i < contours.size(); i++){
+        approxPolyDP(contours[i], approxTriangle, arcLength(Mat(contours[i]), true)*0.05, true);
+        if(approxTriangle.size() == 3){
+            drawContours(img, contours, i, Scalar(0, 255, 255), CV_FILLED); // fill GREEN
+            vector<Point>::iterator vertex;
+            for(vertex = approxTriangle.begin(); vertex != approxTriangle.end(); ++vertex){
+                circle(img, *vertex, 3, Scalar(0, 0, 255), 1);
+            }
         }
-        // Find the minimum area enclosing bounding box
-        RotatedRect box = minAreaRect(Mat(points));
-        // Find the minimum area enclosing triangle
-        vector<Point2f> triangle;
-        minEnclosingTriangle(points, triangle);
-        // Find the minimum area enclosing circle
-        Point2f center, vtx[4];
-        float radius = 0;
-        minEnclosingCircle(Mat(points), center, radius);
-        box.points(vtx);
-        img = Scalar::all(0);
-        // Draw the points
-        for( i = 0; i < count; i++ )
-            circle( img, points[i], 3, Scalar(0, 0, 255), FILLED, LINE_AA );
-        // Draw the bounding box
-        for( i = 0; i < 4; i++ )
-            line(img, vtx[i], vtx[(i+1)%4], Scalar(0, 255, 0), 1, LINE_AA);
-        // Draw the triangle
-        for( i = 0; i < 3; i++ )
-            line(img, triangle[i], triangle[(i+1)%3], Scalar(255, 255, 0), 1, LINE_AA);
-        // Draw the circle
-        circle(img, center, cvRound(radius), Scalar(0, 255, 255), 1, LINE_AA);
-        imshow( "Rectangle, triangle & circle", img );
-        char key = (char)waitKey();
-        if( key == 27 || key == 'q' || key == 'Q' ) // 'ESC'
-            break;
     }
-    return 0;
 }

@@ -134,6 +134,43 @@ clean: CMakeFiles/pseudo.dir/clean
 .PHONY : clean
 
 #=============================================================================
+# Target rules for target CMakeFiles/xeno.dir
+
+# All Build rule for target.
+CMakeFiles/xeno.dir/all:
+	$(MAKE) -f CMakeFiles/xeno.dir/build.make CMakeFiles/xeno.dir/depend
+	$(MAKE) -f CMakeFiles/xeno.dir/build.make CMakeFiles/xeno.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dyutimoy/Xenocrypt/CMakeFiles --progress-num=9,10 "Built target xeno"
+.PHONY : CMakeFiles/xeno.dir/all
+
+# Include target in all.
+all: CMakeFiles/xeno.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/xeno.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dyutimoy/Xenocrypt/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/xeno.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dyutimoy/Xenocrypt/CMakeFiles 0
+.PHONY : CMakeFiles/xeno.dir/rule
+
+# Convenience name for target.
+xeno: CMakeFiles/xeno.dir/rule
+
+.PHONY : xeno
+
+# clean rule for target.
+CMakeFiles/xeno.dir/clean:
+	$(MAKE) -f CMakeFiles/xeno.dir/build.make CMakeFiles/xeno.dir/clean
+.PHONY : CMakeFiles/xeno.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/xeno.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/crypt.dir
 
 # All Build rule for target.
