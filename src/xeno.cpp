@@ -33,7 +33,7 @@ xeno front_det(Mat);
 xeno refined(xeno,xeno,float);
 Mat countour_detect(Mat);
 
-float dist(vector<Point2f> ,vector<Point2f> ,int,int);
+float dist(Point2f ,Point2f );
 
 Mat dfs_ker(int i, int j, Mat img,Mat &aux)
 {
@@ -197,6 +197,10 @@ int main( int argc, char** argv )
         
         front_image=front_det(src);
         rear_image = rear_det(src);
+        start_image = start_det(src);
+        
+        //find the nearest point unvisted point
+        //apply function dir 
         
         
         namedWindow("square",CV_WINDOW_AUTOSIZE );
@@ -672,7 +676,7 @@ xeno front_det(Mat img )
       // drawContours( drawing, hull, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
      // rectangle( new_drawing, new_boundRect[i].tl(), new_boundRect[i].br(), Scalar(rng.uniform(0,255), rng.uniform(0,255),rng.uniform(0,255)), 2, 8, 0 );
        circle( new_drawing, new_mc[i], 4, color, -1, 8, 0 );
-       cout<<"from direct"<<"\n";
+       cout<<"from direct front "<<"\n";
     cout<<new_mc[i]<<"  "<<i/2<<"   "<<new_contours.size()<<"\n";
       // circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
        new_count = new_count + 20;
@@ -831,7 +835,7 @@ xeno rear_det(Mat img )
       // drawContours( drawing, hull, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
      // rectangle( new_drawing, new_boundRect[i].tl(), new_boundRect[i].br(), Scalar(rng.uniform(0,255), rng.uniform(0,255),rng.uniform(0,255)), 2, 8, 0 );
        circle( new_drawing, new_mc[i], 4, color, -1, 8, 0 );
-       cout<<"from direct"<<"\n";
+       cout<<"from direct rear"<<"\n";
     cout<<new_mc[i]<<"  "<<i/2<<"   "<<new_contours.size()<<"\n";
       // circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
        new_count = new_count + 20;
@@ -903,7 +907,7 @@ xeno start_det(Mat img )
      {
       if(contourArea(contours[i])>50 && contourArea(contours[i])<2000 )
         { 
-            if(img.at<Vec3b>(mc[i].y,mc[i].x)[0]>=100)                          //edit this accordingly
+            if(img.at<Vec3b>(mc[i].y,mc[i].x)[0]>=0)                          //edit this accordingly
             {
                 Scalar color = Scalar(255,count,0 );
                Scalar color_c = Scalar(255,255,0 );
@@ -990,7 +994,7 @@ xeno start_det(Mat img )
       // drawContours( drawing, hull, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
      // rectangle( new_drawing, new_boundRect[i].tl(), new_boundRect[i].br(), Scalar(rng.uniform(0,255), rng.uniform(0,255),rng.uniform(0,255)), 2, 8, 0 );
        circle( new_drawing, new_mc[i], 4, color, -1, 8, 0 );
-       cout<<"from direct"<<"\n";
+       cout<<"from direct start"<<"\n";
     cout<<new_mc[i]<<"  "<<i/2<<"   "<<new_contours.size()<<"\n";
       // circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
        new_count = new_count + 20;
@@ -1091,14 +1095,15 @@ Point2f dir(xeno xeno_s,xeno xeno_t,xeno xeno_fr,xeno xeno_rr)
 {
     
     Point2f center =( xeno_fr.c_mc[0] + xeno_rr.c_mc[0] )/2;
-    
+    Point2f prob_dest;
     float min_s = 10000000;
     float min_val_s = 0;
     for(int i=0;i<xeno_s.contour.size();i++)
     {
-        if(xeno_s.c_mc[i].x!=0 || xeno_s.c_mc[i].y !=0 && min>dist(xeno_s.c_mc[i],center))
+         prob_dest = xeno_s.c_mc[i];
+        if(xeno_s.c_mc[i].x!=0 || xeno_s.c_mc[i].y !=0&& min_s>dist(prob_dest,center))
         {
-            min_s = dist(xeno_s.c_mc[i],center);
+            min_s = dist(prob_dest,center);
             min_val_s=i;        
         }    
     }    
@@ -1106,22 +1111,15 @@ Point2f dir(xeno xeno_s,xeno xeno_t,xeno xeno_fr,xeno xeno_rr)
     float min_val_t = 0;
     for(int i=0;i<xeno_t.contour.size();i++)
     {
-        if(xeno_t.c_mc[i].x!=0 || xeno_t.c_mc[i].y !=0 && min>dist(xeno_t.c_mc[i],center))
+        prob_dest = xeno_t.c_mc[i];
+        if(xeno_t.c_mc[i].x!=0 || xeno_t.c_mc[i].y !=0 && min_t > dist(prob_dest,center) )
         {
-            min_t = dist(xeno_s.c_mc[i],center);
+            min_t = dist(prob_dest,center);
             min_val_t=i;        
         }    
     }    
-    float min_val;
-    if(min_t<30)
-    {
-        return xeno_t.c_mc[min_val_t];
-    } 
-    if(min_s<30)
-    {
-        return xeno_s.c_mc[min_val_s];
-    }    
-    if(100/min_t > 200/min_s  )
+    
+    if(min_t/100 > min_s/200 && min_t >30   )
     {
         return xeno_t.c_mc[min_val_t];
         
@@ -1132,6 +1130,17 @@ Point2f dir(xeno xeno_s,xeno xeno_t,xeno xeno_fr,xeno xeno_rr)
     
     
 }   
+
+/*
+float min_val;
+    if(min_t<30)
+    {
+        return xeno_t.c_mc[min_val_t];
+    } 
+    if(min_s<30)
+    {
+        return xeno_s.c_mc[min_val_s];
+    }    */
 /*
 int Pathplanning(Point2f dest,Point2f start,Point2f center,Point2f front,Point2f rear)
 {
