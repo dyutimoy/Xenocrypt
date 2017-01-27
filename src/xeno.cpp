@@ -29,7 +29,8 @@ xeno rear_det(Mat);
 xeno start_det(Mat);
 xeno front_det(Mat);
 
-
+Point2f dir(xeno ,xeno ,xeno ,xeno);
+float angle(Point2f ,Point2f,Point2f );
 xeno refined(xeno,xeno,float);
 Mat countour_detect(Mat);
 
@@ -84,6 +85,10 @@ int main( int argc, char** argv )
     Mat src,src_gray;    
     src = imread( argv[1]);                                     //the image can loaded in 3 ways i.e . from webacam or videofile or image
    VideoCapture vid("conquest_sample_arena.webm");
+   
+   int flag_start=0;
+   int flag_goal=0;
+   float distance,angle_rotate;
     //VideoCapture webcam(0);
    float frame_count = 0;
     Mat frame;
@@ -91,6 +96,7 @@ int main( int argc, char** argv )
     double cframe;
     tframe = vid.get(CV_CAP_PROP_FRAME_COUNT);
     cframe = vid.get(CV_CAP_PROP_POS_FRAMES);
+    Point2f start,goal,position ;
     xeno old_start_image,start_image,final_start_image,old_square_image,old_triangle_image,final_square_image,final_triangle_image,square_image,triangle_image,front_image,rear_image; 
    while(1)
    {
@@ -117,7 +123,7 @@ int main( int argc, char** argv )
             frame_count++;
         }    
         
-        while(frame_count <= 74 && frame_count != 0)
+        while(frame_count <= 100 && frame_count != 0)
         {
             vid >> src;
                         
@@ -135,14 +141,16 @@ int main( int argc, char** argv )
         
             square_image = square_det(resize_src);
             triangle_image = triangle_det(resize_src);
+            start_image = start_det(resize_src);
             
-          //  final_square_image = refined(square_image,old_square_image,frame_count);        //detect and refine it
-            //final_triangle_image= refined(triangle_image,old_triangle_image,frame_count);
-            
+         // final_square_image = refined(square_image,old_square_image,frame_count);        //detect and refine it
+           final_triangle_image= refined(triangle_image,old_triangle_image,frame_count);
+         // final_start_image=refined(start_image,old_start_image,frame_count); 
             old_square_image= square_image;
             
-            old_triangle_image=triangle_image;
+            old_triangle_image=final_triangle_image;
             old_start_image= start_image;
+            
             
             frame_count++;
             cout<<frame_count<<"\n";
@@ -161,7 +169,7 @@ int main( int argc, char** argv )
         resize(src,resize_src,resize_src.size(),0,0,CV_INTER_AREA);
         imshow( source_window, resize_src );
         
-        if(frame_count==75)
+        if(frame_count==101)
         {
             for( int i = 0; i< old_square_image.contour.size(); i++ )
             {
@@ -176,8 +184,8 @@ int main( int argc, char** argv )
             {
                 if((i%2) == 0 && old_triangle_image.c_mc[i].x != 0 && old_triangle_image.c_mc[i].y != 0)
                 {
-                    cout<<"actual size"<<"\n";
-                    cout<<old_triangle_image.c_mc[i]<<"  "<<i/2<<"  "<<old_triangle_image.contour.size()<<"\n";
+                    //cout<<"actual size"<<"\n";
+                   // cout<<old_triangle_image.c_mc[i]<<"  "<<i/2<<"  "<<old_triangle_image.contour.size()<<"\n";
                 }
 
             }
@@ -185,8 +193,8 @@ int main( int argc, char** argv )
             {
                 if((i%2) == 0 && old_start_image.c_mc[i].x != 0 && old_start_image.c_mc[i].y != 0)
                 {
-                    cout<<"actual size"<<"\n";
-                    cout<<old_start_image.c_mc[i]<<"  "<<i/2<<"  "<<old_start_image.contour.size()<<"\n";
+                   // cout<<"actual size"<<"\n";
+                   // cout<<old_start_image.c_mc[i]<<"  "<<i/2<<"  "<<old_start_image.contour.size()<<"\n";
                 }
 
             }frame_count=500;
@@ -197,7 +205,56 @@ int main( int argc, char** argv )
         
         front_image=front_det(src);
         rear_image = rear_det(src);
-        start_image = start_det(src);
+        start = old_start_image.c_mc[0];
+        position= ( front_image.c_mc[0] + rear_image.c_mc[0] )/2;
+        if (flag_goal==0 && flag_start==0)
+        {
+            //find the goal
+            goal = dir(old_square_image,old_triangle_image,front_image,rear_image);
+            
+            flag_goal=1;
+            
+        }    
+        
+        if(flag_goal==1 && flag_start==0)
+        {
+            distance = dist(goal,position);
+            angle_rotate = angle(front_image.c_mc[0],rear_image.c_mc[0],goal);
+           // cout<<distance<<"going to goal\n";
+           // cout<<angle_rotate<<"angle to goal\n";
+            
+            if (distance <30)
+            {
+                flag_goal=2;
+                flag_start=1;
+                distance=0;
+            }    
+        }    
+        if(flag_goal==2 && flag_start ==1)
+        {
+            
+            angle_rotate =angle(front_image.c_mc[0],rear_image.c_mc[0],start);
+            if(angle_rotate < 0.1 && dist(front_image.c_mc[0],start)<dist(rear_image.c_mc[0],start))
+            {
+                flag_goal=2;
+                flag_start=2;
+            }        
+            
+        }    
+        if(flag_goal==2 &&  flag_start==2)
+        {
+            distance = dist(position,start);
+            angle_rotate = angle(front_image.c_mc[0],rear_image.c_mc[0],start);
+            cout<<distance<<"\n";
+            cout<<angle_rotate<<"\n";
+            if(dist(start,position)<30)
+            {
+                flag_goal=0;
+                flag_start=0;
+            }        
+            
+        }    
+        
         
         //find the nearest point unvisted point
         //apply function dir 
@@ -207,6 +264,7 @@ int main( int argc, char** argv )
         imshow("square",old_square_image.c_img);
         namedWindow("triangle",CV_WINDOW_AUTOSIZE );
         imshow("triangle",old_triangle_image.c_img);
+        
         
             
         int iKey = waitKey(50);
@@ -516,8 +574,8 @@ xeno triangle_det(Mat img )
       // drawContours( drawing, hull, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
      // rectangle( new_drawing, new_boundRect[i].tl(), new_boundRect[i].br(), Scalar(rng.uniform(0,255), rng.uniform(0,255),rng.uniform(0,255)), 2, 8, 0 );
        circle( new_drawing, new_mc[i], 4, color, -1, 8, 0 );
-       cout<<"from direct"<<"\n";
-    cout<<new_mc[i]<<"  "<<i/2<<"   "<<new_contours.size()<<"\n";
+      // cout<<"from direct"<<"\n";
+   // cout<<new_mc[i]<<"  "<<i/2<<"   "<<new_contours.size()<<"\n";
       // circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
        new_count = new_count + 20;
       }
@@ -676,8 +734,8 @@ xeno front_det(Mat img )
       // drawContours( drawing, hull, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
      // rectangle( new_drawing, new_boundRect[i].tl(), new_boundRect[i].br(), Scalar(rng.uniform(0,255), rng.uniform(0,255),rng.uniform(0,255)), 2, 8, 0 );
        circle( new_drawing, new_mc[i], 4, color, -1, 8, 0 );
-       cout<<"from direct front "<<"\n";
-    cout<<new_mc[i]<<"  "<<i/2<<"   "<<new_contours.size()<<"\n";
+    //   cout<<"from direct front "<<"\n";
+    //cout<<new_mc[i]<<"  "<<i/2<<"   "<<new_contours.size()<<"\n";
       // circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
        new_count = new_count + 20;
       }
@@ -835,8 +893,8 @@ xeno rear_det(Mat img )
       // drawContours( drawing, hull, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
      // rectangle( new_drawing, new_boundRect[i].tl(), new_boundRect[i].br(), Scalar(rng.uniform(0,255), rng.uniform(0,255),rng.uniform(0,255)), 2, 8, 0 );
        circle( new_drawing, new_mc[i], 4, color, -1, 8, 0 );
-       cout<<"from direct rear"<<"\n";
-    cout<<new_mc[i]<<"  "<<i/2<<"   "<<new_contours.size()<<"\n";
+  //     cout<<"from direct rear"<<"\n";
+   // cout<<new_mc[i]<<"  "<<i/2<<"   "<<new_contours.size()<<"\n";
       // circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
        new_count = new_count + 20;
       }
@@ -994,8 +1052,8 @@ xeno start_det(Mat img )
       // drawContours( drawing, hull, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
      // rectangle( new_drawing, new_boundRect[i].tl(), new_boundRect[i].br(), Scalar(rng.uniform(0,255), rng.uniform(0,255),rng.uniform(0,255)), 2, 8, 0 );
        circle( new_drawing, new_mc[i], 4, color, -1, 8, 0 );
-       cout<<"from direct start"<<"\n";
-    cout<<new_mc[i]<<"  "<<i/2<<"   "<<new_contours.size()<<"\n";
+   //    cout<<"from direct start"<<"\n";
+   // cout<<new_mc[i]<<"  "<<i/2<<"   "<<new_contours.size()<<"\n";
       // circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
        new_count = new_count + 20;
       }
@@ -1017,72 +1075,58 @@ xeno start_det(Mat img )
     
 }
 
-/*
+
 xeno refined(xeno img_old,xeno img_new,float weight)
 {
     xeno img_final;
+    img_final = img_old;
     img_final.c_img = Mat::zeros( img_old.c_img.size(), CV_8UC3 );
+   
     
-    if(img_old.contour.size() > img_new.contour.size())
-    {
-        img_final.contour=img_old.contour;
+    Point2f distance;
+    Point2f old_pt,new_pt;
+    Point2f final_pt[100];
+    
+        //img_final.contour=img_old.contour;
         for(int i=0;i<img_old.contour.size();i++)
         {
             for(int j=0;j<img_new.contour.size();)
             {
-                if (dist(img_old.c_mc,img_new.c_mc,i,j) < 20.0)
+                old_pt=img_old.c_mc[i];
+                new_pt=img_new.c_mc[j];
+                if (dist(old_pt,new_pt) < 100.0)
                 {
-                    img_final.c_mc[i].x=((weight-1)*img_old.c_mc[i].x + img_new.c_mc[j].x)/weight;
-                    img_final.c_mc[i].y=((weight-1)*img_old.c_mc[i].y + img_new.c_mc[j].y)/weight;
+                   final_pt[i].x=((weight-1)*old_pt.x + new_pt.x)/weight;
+                    final_pt[i].y=((weight-1)*old_pt.y + new_pt.y)/weight;
+                    //cout<<final_pt[i]<<"   c  "<<i<<" "<<j<<"  "<<old_pt<<"   "<<img_old.contour.size()<<" "<<img_new.contour.size()<<"\n";
                     break;
                 }
                 else
                 {
                     
-                    img_final.c_mc[i].x= NULL;
-                    img_final.c_mc[i].y= NULL;
+                    
                     j++;
                 }
             }   
+            final_pt[i].x=old_pt.x;
+            final_pt[i].y=old_pt.y;
         }    
+       // img_final.c_mc= img_old.c_mc + img_new.c_mc;
         for( int i = 0; i< img_old.contour.size(); i++ )
         {
+           // img_final.c_mc= img_old.c_mc;
             Scalar color = Scalar(255,255,255 );
-            circle( img_final.c_img, img_final.c_mc[i], 4, color, -1, 8, 0 );
+            circle( img_final.c_img, final_pt[i], 4, color, -1, 8, 0 );
         }    
-    }    
+      
     
-    if(img_old.contour.size() <= img_new.contour.size())
-    {
-        img_final.contour=img_new.contour;
-        for(int i=0;i<img_new.contour.size();i++)
-        {
-            for(int j=0;j<img_old.contour.size();)
-            {
-                if (dist(img_old.c_mc,img_new.c_mc,i,j) <20.0)
-                {
-                    img_final.c_mc[i].x=((weight-1)*img_old.c_mc[i].x + img_new.c_mc[j].x)/weight;
-                    img_final.c_mc[i].y=((weight-1)*img_old.c_mc[i].y + img_new.c_mc[j].y)/weight;
-                    break;
-                }
-                else
-                {
-                    img_final.c_mc[i].x= NULL;
-                    img_final.c_mc[i].y= NULL;
-                    j++;
-                }
-            }   
-        }    
+      
         
-        for( int i = 0; i< img_new.contour.size(); i++ )
-        {
-            Scalar color = Scalar(255,255,255 );
-            circle( img_final.c_img, img_final.c_mc[i], 4, color, -1, 8, 0 );
-        }    
-    }  
+       
+    
     return img_final;
 }        
-        */
+
 
 
 float dist(Point2f a,Point2f b)
@@ -1141,23 +1185,23 @@ float min_val;
     {
         return xeno_s.c_mc[min_val_s];
     }    */
-/*
-int Pathplanning(Point2f dest,Point2f start,Point2f center,Point2f front,Point2f rear)
+
+float angle(Point2f front,Point2f rear,Point2f dest)
 {
-    float angle;
+    float angle_rotate;
     //finding angle 
     if(dist(front,dest) != 0)
     {
-    angle = acos((fabs)((( dest.x-front.x)^2 +(dest.y-front.y)^2)-(( dest.x-rear.x)^2 +(dest.y-rear.y)^2)-(( front.x-rear.x)^2 +(front.y-rear.y)^2))/(2*(( front.x-rear.x)^2 +(front.y-rear.y)^2)*(( dest.x-rear.x)^2 +(dest.y-rear.y)^2)));
+    angle_rotate = 100;
     }
     
-    if (angle > 0.2) 
+    if (angle_rotate > 0.2) 
     {
-        cout<<"rotate"<< "n";
+        cout<<"rotate"<< "\n";
     }    
     else cout<<"go straight"<<"\n";
     
     
     
- * 
-}    */
+ 
+}   
