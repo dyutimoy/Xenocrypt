@@ -137,6 +137,19 @@ pseudo/fast:
 .PHONY : pseudo/fast
 
 #=============================================================================
+# Target rules for targets named Xenocrypt
+
+# Build rule for target.
+Xenocrypt: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 Xenocrypt
+.PHONY : Xenocrypt
+
+# fast build rule for target.
+Xenocrypt/fast:
+	$(MAKE) -f CMakeFiles/Xenocrypt.dir/build.make CMakeFiles/Xenocrypt.dir/build
+.PHONY : Xenocrypt/fast
+
+#=============================================================================
 # Target rules for targets named xeno
 
 # Build rule for target.
@@ -174,6 +187,33 @@ learn: cmake_check_build_system
 learn/fast:
 	$(MAKE) -f CMakeFiles/learn.dir/build.make CMakeFiles/learn.dir/build
 .PHONY : learn/fast
+
+src/Xenocrypt.o: src/Xenocrypt.cpp.o
+
+.PHONY : src/Xenocrypt.o
+
+# target to build an object file
+src/Xenocrypt.cpp.o:
+	$(MAKE) -f CMakeFiles/Xenocrypt.dir/build.make CMakeFiles/Xenocrypt.dir/src/Xenocrypt.cpp.o
+.PHONY : src/Xenocrypt.cpp.o
+
+src/Xenocrypt.i: src/Xenocrypt.cpp.i
+
+.PHONY : src/Xenocrypt.i
+
+# target to preprocess a source file
+src/Xenocrypt.cpp.i:
+	$(MAKE) -f CMakeFiles/Xenocrypt.dir/build.make CMakeFiles/Xenocrypt.dir/src/Xenocrypt.cpp.i
+.PHONY : src/Xenocrypt.cpp.i
+
+src/Xenocrypt.s: src/Xenocrypt.cpp.s
+
+.PHONY : src/Xenocrypt.s
+
+# target to generate assembly for a file
+src/Xenocrypt.cpp.s:
+	$(MAKE) -f CMakeFiles/Xenocrypt.dir/build.make CMakeFiles/Xenocrypt.dir/src/Xenocrypt.cpp.s
+.PHONY : src/Xenocrypt.cpp.s
 
 src/conquest.o: src/conquest.cpp.o
 
@@ -319,10 +359,14 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... conquest"
 	@echo "... pseudo"
+	@echo "... Xenocrypt"
 	@echo "... xeno"
 	@echo "... crypt"
 	@echo "... edit_cache"
 	@echo "... learn"
+	@echo "... src/Xenocrypt.o"
+	@echo "... src/Xenocrypt.i"
+	@echo "... src/Xenocrypt.s"
 	@echo "... src/conquest.o"
 	@echo "... src/conquest.i"
 	@echo "... src/conquest.s"

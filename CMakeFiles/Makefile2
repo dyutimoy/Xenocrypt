@@ -66,7 +66,7 @@ CMAKE_BINARY_DIR = /home/dyutimoy/Xenocrypt
 CMakeFiles/conquest.dir/all:
 	$(MAKE) -f CMakeFiles/conquest.dir/build.make CMakeFiles/conquest.dir/depend
 	$(MAKE) -f CMakeFiles/conquest.dir/build.make CMakeFiles/conquest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dyutimoy/Xenocrypt/CMakeFiles --progress-num=1,2 "Built target conquest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dyutimoy/Xenocrypt/CMakeFiles --progress-num=3,4 "Built target conquest"
 .PHONY : CMakeFiles/conquest.dir/all
 
 # Include target in all.
@@ -103,7 +103,7 @@ clean: CMakeFiles/conquest.dir/clean
 CMakeFiles/pseudo.dir/all:
 	$(MAKE) -f CMakeFiles/pseudo.dir/build.make CMakeFiles/pseudo.dir/depend
 	$(MAKE) -f CMakeFiles/pseudo.dir/build.make CMakeFiles/pseudo.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dyutimoy/Xenocrypt/CMakeFiles --progress-num=7,8 "Built target pseudo"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dyutimoy/Xenocrypt/CMakeFiles --progress-num=9,10 "Built target pseudo"
 .PHONY : CMakeFiles/pseudo.dir/all
 
 # Include target in all.
@@ -134,13 +134,50 @@ clean: CMakeFiles/pseudo.dir/clean
 .PHONY : clean
 
 #=============================================================================
+# Target rules for target CMakeFiles/Xenocrypt.dir
+
+# All Build rule for target.
+CMakeFiles/Xenocrypt.dir/all:
+	$(MAKE) -f CMakeFiles/Xenocrypt.dir/build.make CMakeFiles/Xenocrypt.dir/depend
+	$(MAKE) -f CMakeFiles/Xenocrypt.dir/build.make CMakeFiles/Xenocrypt.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dyutimoy/Xenocrypt/CMakeFiles --progress-num=1,2 "Built target Xenocrypt"
+.PHONY : CMakeFiles/Xenocrypt.dir/all
+
+# Include target in all.
+all: CMakeFiles/Xenocrypt.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/Xenocrypt.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dyutimoy/Xenocrypt/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/Xenocrypt.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dyutimoy/Xenocrypt/CMakeFiles 0
+.PHONY : CMakeFiles/Xenocrypt.dir/rule
+
+# Convenience name for target.
+Xenocrypt: CMakeFiles/Xenocrypt.dir/rule
+
+.PHONY : Xenocrypt
+
+# clean rule for target.
+CMakeFiles/Xenocrypt.dir/clean:
+	$(MAKE) -f CMakeFiles/Xenocrypt.dir/build.make CMakeFiles/Xenocrypt.dir/clean
+.PHONY : CMakeFiles/Xenocrypt.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/Xenocrypt.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/xeno.dir
 
 # All Build rule for target.
 CMakeFiles/xeno.dir/all:
 	$(MAKE) -f CMakeFiles/xeno.dir/build.make CMakeFiles/xeno.dir/depend
 	$(MAKE) -f CMakeFiles/xeno.dir/build.make CMakeFiles/xeno.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dyutimoy/Xenocrypt/CMakeFiles --progress-num=9,10 "Built target xeno"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dyutimoy/Xenocrypt/CMakeFiles --progress-num=11,12 "Built target xeno"
 .PHONY : CMakeFiles/xeno.dir/all
 
 # Include target in all.
@@ -177,7 +214,7 @@ clean: CMakeFiles/xeno.dir/clean
 CMakeFiles/crypt.dir/all:
 	$(MAKE) -f CMakeFiles/crypt.dir/build.make CMakeFiles/crypt.dir/depend
 	$(MAKE) -f CMakeFiles/crypt.dir/build.make CMakeFiles/crypt.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dyutimoy/Xenocrypt/CMakeFiles --progress-num=3,4 "Built target crypt"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dyutimoy/Xenocrypt/CMakeFiles --progress-num=5,6 "Built target crypt"
 .PHONY : CMakeFiles/crypt.dir/all
 
 # Include target in all.
@@ -214,7 +251,7 @@ clean: CMakeFiles/crypt.dir/clean
 CMakeFiles/learn.dir/all:
 	$(MAKE) -f CMakeFiles/learn.dir/build.make CMakeFiles/learn.dir/depend
 	$(MAKE) -f CMakeFiles/learn.dir/build.make CMakeFiles/learn.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dyutimoy/Xenocrypt/CMakeFiles --progress-num=5,6 "Built target learn"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dyutimoy/Xenocrypt/CMakeFiles --progress-num=7,8 "Built target learn"
 .PHONY : CMakeFiles/learn.dir/all
 
 # Include target in all.

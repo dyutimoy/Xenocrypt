@@ -262,8 +262,6 @@ int main( int argc, char** argv )
         if(flag_goal==2 && flag_start ==1)
         {
             start_image = start_det(resize_src);
-            if (start_image.contour.size() != NULL)
-                cout <<"Not null"<<"\n";
             start =start_image.c_mc[0];
             angle_rotate =angle(front_image.c_mc[0],rear_image.c_mc[0],start);
             if(fabs(angle_rotate) < 4 && dist(front_image.c_mc[0],start)<dist(rear_image.c_mc[0],start))
