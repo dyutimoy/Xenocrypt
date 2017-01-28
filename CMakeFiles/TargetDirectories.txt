@@ -1,8 +1,7 @@
-/home/dyutimoy/Xenocrypt/CMakeFiles/rebuild_cache.dir
-/home/dyutimoy/Xenocrypt/CMakeFiles/conquest.dir
-/home/dyutimoy/Xenocrypt/CMakeFiles/pseudo.dir
-/home/dyutimoy/Xenocrypt/CMakeFiles/Xenocrypt.dir
-/home/dyutimoy/Xenocrypt/CMakeFiles/xeno.dir
-/home/dyutimoy/Xenocrypt/CMakeFiles/crypt.dir
-/home/dyutimoy/Xenocrypt/CMakeFiles/edit_cache.dir
-/home/dyutimoy/Xenocrypt/CMakeFiles/learn.dir
+/home/gitu/Xenocrypt/CMakeFiles/Xenocrypt.dir
+/home/gitu/Xenocrypt/CMakeFiles/conquest.dir
+/home/gitu/Xenocrypt/CMakeFiles/crypt.dir
+/home/gitu/Xenocrypt/CMakeFiles/learn.dir
+/home/gitu/Xenocrypt/CMakeFiles/pseudo.dir
+/home/gitu/Xenocrypt/CMakeFiles/videocolour.dir
+/home/gitu/Xenocrypt/CMakeFiles/xeno.dir
