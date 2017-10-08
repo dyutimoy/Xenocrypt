@@ -10,8 +10,8 @@ set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "/opt/ros/kinetic/include/opencv-3.1.0-dev/opencv"
-  "/opt/ros/kinetic/include/opencv-3.1.0-dev"
+  "/opt/ros/kinetic/include/opencv-3.2.0"
+  "/opt/ros/kinetic/include/opencv-3.2.0/opencv"
   )
 
 # Targets to which this target links.

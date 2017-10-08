@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="97">
+<configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="src">
+        <in>Xenocrypt.cpp</in>
         <in>conquest.cpp</in>
         <in>crypt.cpp</in>
         <in>learn.cpp</in>
@@ -41,8 +42,8 @@
           <executablePath></executablePath>
           <ccTool>
             <incDir>
-              <pElem>/opt/ros/kinetic/include/opencv-3.1.0-dev/opencv</pElem>
-              <pElem>/opt/ros/kinetic/include/opencv-3.1.0-dev</pElem>
+              <pElem>/opt/ros/kinetic/include/opencv-3.2.0</pElem>
+              <pElem>/opt/ros/kinetic/include/opencv-3.2.0/opencv</pElem>
               <pElem>.</pElem>
             </incDir>
           </ccTool>
@@ -52,6 +53,8 @@
           <preBuildCommand>${CMAKE} -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=${IDE_CC} -DCMAKE_CXX_COMPILER=${IDE_CXX} -DCMAKE_C_FLAGS_DEBUG="-g3 -gdwarf-2" -DCMAKE_CXX_FLAGS_DEBUG="-g3 -gdwarf-2" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .</preBuildCommand>
         </preBuild>
       </makefileType>
+      <item path="src/Xenocrypt.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/conquest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/crypt.cpp" ex="false" tool="1" flavor2="4">

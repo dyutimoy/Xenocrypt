@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project( opencv )
 find_package( OpenCV REQUIRED )
+add_compile_options(-std=c++11)
 
 add_executable( conquest src/conquest.cpp )
 add_executable( crypt src/crypt.cpp)

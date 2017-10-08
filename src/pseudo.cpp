@@ -99,39 +99,28 @@ Mat lochsv(Mat img,int hx,int hn ,int sx ,int sn,int vx, int vn)
 	}return dechsv;
 }
 
-
 int main()
 {
-	
-	Mat image;
-	Mat hsvimg,binaryimg;
-	 VideoCapture vid("conquest_sample_arena.webm");
-	
-	//grayimg = createimghumangrey(hsvimg);
-	int thresold = 0, hmax = 0, hmin = 0, smax = 0, smin = 0, vmax=0, vmin=0;
-	namedWindow("binary",CV_WINDOW_AUTOSIZE);
-	//printf("%d", thresold);
-	//createTrackbar("threshold1", "binary", &thresold, 255);
-	createTrackbar("hmax", "binary", &hmax, 180);
-	createTrackbar("hmin", "binary", &hmin, 180);
-	createTrackbar("vmax", "binary", &vmax, 255);
-	createTrackbar("vmin", "binary", &vmin, 255);
-	createTrackbar("smax", "binary", &smax, 255);
-	createTrackbar("smin", "binary", &smin, 255);
-	
-	vid >> image;
+	VideoCapture webcam(0);
+	int threshold = 0;
+        int frame_width= webcam.get(CV_CAP_PROP_FRAME_WIDTH);
+        int frame_height= webcam.get(CV_CAP_PROP_FRAME_HEIGHT);
+	namedWindow("vidbin", CV_WINDOW_AUTOSIZE);
+	createTrackbar("threshold", "vidbin", &threshold, 255);
+        cout<<frame_width<<"   "<<frame_height<<"\n";
+        VideoWriter video("comeout.mp4",CV_FOURCC('D','I','V','3'),1,Size(frame_width,frame_height),true);
 	while (1)
-	{       
-            
-                cvtColor(image, hsvimg, CV_BGR2HSV);
-            
-                displayimage(image, "colour");
-		binaryimg = lochsv(hsvimg, hmax, hmin, smax, smin, vmax, vmin);
-		
-		imshow("binary",binaryimg);
+	{
+		Mat temp;
+		webcam.read(temp);
+                cout<<frame_width<<"   "<<frame_height<<"\n";
+		//Mat grey = createimghumangrey(temp);
+		//Mat binary = creatingbinary(grey, threshold);
+		video.write(temp);
+		imshow("vidbin", temp);
+                
 
-		int iKey = waitKey(50);
-		if (iKey == 27)break;
-	}
-	return 0;
+		waitKey(50);
+
+	}return 0;
 }

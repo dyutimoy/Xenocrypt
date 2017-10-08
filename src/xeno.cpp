@@ -16,6 +16,7 @@ int size = 3;
 int maxCorners=25;
 int ctr=0;
 int ctr_n =0;
+
 /// Function header
 struct xeno {
     Mat c_img;
@@ -33,6 +34,11 @@ xeno triangle_det(Mat);
 xeno rear_det(Mat);
 xeno start_det(Mat);
 xeno front_det(Mat);
+bool color_y(float,float,Mat);
+bool color_b(float,float,Mat);
+bool color_rear(float,float,Mat);
+bool color_front(float,float,Mat);
+
 
 goal_count dir(xeno ,xeno ,xeno ,xeno);
 float angle(Point2f ,Point2f,Point2f );
@@ -88,8 +94,8 @@ int Isvalid(Mat img, int a, int b)
 int main( int argc, char** argv )
 {
     Mat src,src_gray;    
-    src = imread( argv[1]);                                     //the image can loaded in 3 ways i.e . from webacam or videofile or image
-   VideoCapture vid("conquest_sample_arena.webm");
+    //src = imread( argv[1]);                                     //the image can loaded in 3 ways i.e . from webacam or videofile or image
+   VideoCapture vid(argv[1]);
    
    int flag_start=0;
    int flag_goal=0;
@@ -221,9 +227,9 @@ int main( int argc, char** argv )
         resize(src,resize_src,resize_src.size(),0,0,CV_INTER_AREA);
         imshow( source_window, resize_src ); 
        
-        front_image=front_det(resize_src);
-        rear_image = rear_det(resize_src);
-        
+      //  front_image=front_det(resize_src);
+      //  rear_image = rear_det(resize_src);
+        /*
         position= ( front_image.c_mc[0] + rear_image.c_mc[0] )/2;
         if (flag_goal==0 && flag_start==0)
         {
@@ -288,13 +294,14 @@ int main( int argc, char** argv )
             }        
                  if(fabs(angle_rotate) > 4)
            cout<<"a; "<<angle_rotate<<"   angle to start\n";
-        }    
+        }    */
         
         
         //find the nearest point unvisted point
         //apply function dir 
         
-        
+        square_image = square_det(resize_src);
+            triangle_image = triangle_det(resize_src);
         namedWindow("square",CV_WINDOW_AUTOSIZE );
         imshow("square",square_image.c_img);
         namedWindow("triangle",CV_WINDOW_AUTOSIZE );
@@ -361,9 +368,9 @@ xeno square_det(Mat img )
   int count = 0;
   for( int i = 0; i< contours.size(); i++ )
      {
-      if(contourArea(contours[i])>50 && contourArea(contours[i])<2000)
+      if(contourArea(contours[i])>10 && contourArea(contours[i])<20000)
         { 
-            if(img.at<Vec3b>(mc[i].y,mc[i].x)[0]>=100)  
+            if( color_y(mc[i].y,mc[i].x,img))
             {    
                 Scalar color = Scalar(255,count,0 );
                 Scalar color_c = Scalar(255,255,0 );
@@ -467,7 +474,7 @@ xeno square_det(Mat img )
   //namedWindow( "final", CV_WINDOW_AUTOSIZE );
   
   
- // imshow( "final",drawing_edge );
+ imshow( "final",drawing );
   
   return final_image;
     
@@ -522,7 +529,7 @@ xeno triangle_det(Mat img )
      {
       if(contourArea(contours[i])>50 && contourArea(contours[i])<2000)
         { 
-          if(img.at<Vec3b>(mc[i].y,mc[i].x)[0]>=100)  
+          if(color_y(mc[i].y,mc[i].x,img))  
             {
                 Scalar color = Scalar(255,count,0 );
                Scalar color_c = Scalar(255,255,0 );
@@ -1000,7 +1007,7 @@ xeno start_det(Mat img )
      {
       if(contourArea(contours[i])>50 && contourArea(contours[i])<2000 )
         { 
-            if(img.at<Vec3b>(mc[i].y,mc[i].x)[0]>=0)                          //edit this accordingly
+            if(img.at<Vec3b>(mc[i].y,mc[i].x)[0]>=100)                          //edit this accordingly
             {
                 Scalar color = Scalar(255,count,0 );
                Scalar color_c = Scalar(255,255,0 );
@@ -1110,57 +1117,6 @@ xeno start_det(Mat img )
     
 }
 
-
-xeno refined(xeno img_old,xeno img_new,float weight)
-{
-    xeno img_final;
-    img_final = img_old;
-    img_final.c_img = Mat::zeros( img_old.c_img.size(), CV_8UC3 );
-   
-    
-    Point2f distance;
-    Point2f old_pt,new_pt;
-    Point2f final_pt[100];
-    
-        //img_final.contour=img_old.contour;
-        for(int i=0;i<img_old.contour.size();i++)
-        {
-            for(int j=0;j<img_new.contour.size();)
-            {
-                old_pt=img_old.c_mc[i];
-                new_pt=img_new.c_mc[j];
-                if (dist(old_pt,new_pt) < 100.0)
-                {
-                   final_pt[i].x=((weight-1)*old_pt.x + new_pt.x)/weight;
-                    final_pt[i].y=((weight-1)*old_pt.y + new_pt.y)/weight;
-                    //cout<<final_pt[i]<<"   c  "<<i<<" "<<j<<"  "<<old_pt<<"   "<<img_old.contour.size()<<" "<<img_new.contour.size()<<"\n";
-                    break;
-                }
-                else
-                {
-                    
-                    
-                    j++;
-                }
-            }   
-            final_pt[i].x=old_pt.x;
-            final_pt[i].y=old_pt.y;
-        }    
-       // img_final.c_mc= img_old.c_mc + img_new.c_mc;
-        for( int i = 0; i< img_old.contour.size(); i++ )
-        {
-           // img_final.c_mc= img_old.c_mc;
-            Scalar color = Scalar(255,255,255 );
-            circle( img_final.c_img, final_pt[i], 4, color, -1, 8, 0 );
-        }    
-      
-    
-      
-        
-       
-    
-    return img_final;
-}        
 
 
 
@@ -1281,3 +1237,86 @@ float angle(Point2f front,Point2f rear,Point2f dest)
     
  
 }   
+
+
+bool color_y(float a,float b,Mat img)
+{
+    int count = 0 ;
+    for (int i1 = a - size / 2; i1 <= a + size / 2; i1++)
+	{
+		for (int j1 = b - size / 2; j1 <= b + size / 2; j1++)
+		{
+			if (i1 < 0 || i1 >= img.rows || j1 < 0 || j1 >= img.cols)
+			{	
+                            if (img.at<Vec3b>(i1, j1)[0] > 30 && img.at<Vec3b>(i1, j1)[0]< 255 && img.at<Vec3b>(i1, j1)[1] > 110 && img.at<Vec3b>(i1, j1)[1]<255 && img.at<Vec3b>(i1, j1)[2] > 152 && img.at<Vec3b>(i1, j1)[0]< 255  )
+                            {
+                                count++;
+                            }
+                        }
+		}
+	}
+    if(count > 3)
+        return  true;
+    else return false;
+}
+
+
+bool color_b(float a,float b,Mat img)
+{
+    int count = 0 ;
+    for (int i1 = a - size / 2; i1 <= a + size / 2; i1++)
+	{
+		for (int j1 = b - size / 2; j1 <= b + size / 2; j1++)
+		{
+			if (i1 < 0 || i1 >= img.rows || j1 < 0 || j1 >= img.cols)
+				continue;
+			if (img.at<Vec3b>(i1, j1)[0] > 110 && img.at<Vec3b>(i1, j1)[0]< 90 && img.at<Vec3b>(i1, j1)[1] > 88 && img.at<Vec3b>(i1, j1)[1]<120 && img.at<Vec3b>(i1, j1)[2] > 78 && img.at<Vec3b>(i1, j1)[2]< 150  )
+			{
+                            count++;
+			}
+		}
+	}
+    if(count > 3)
+        return  true;
+    else return false;
+}
+
+bool color_front(float a,float b,Mat img)
+{
+    int count = 0 ;
+    for (int i1 = a - size / 2; i1 <= a + size / 2; i1++)
+	{
+		for (int j1 = b - size / 2; j1 <= b + size / 2; j1++)
+		{
+			if (i1 < 0 || i1 >= img.rows || j1 < 0 || j1 >= img.cols)
+				continue;
+			if (img.at<Vec3b>(i1, j1)[0] > 162 && img.at<Vec3b>(i1, j1)[0]< 255 && img.at<Vec3b>(i1, j1)[1] > 122 && img.at<Vec3b>(i1, j1)[1]<226 && img.at<Vec3b>(i1, j1)[2] > 136 && img.at<Vec3b>(i1, j1)[2]< 204  )
+			{
+                            count++;
+			}
+		}
+	}
+    if(count > 3)
+        return  true;
+    else return false;
+}
+bool color_rear(float a,float b,Mat img)
+{
+    int count = 0 ;
+    for (int i1 = a - size / 2; i1 <= a + size / 2; i1++)
+	{
+		for (int j1 = b - size / 2; j1 <= b + size / 2; j1++)
+		{
+			if (i1 < 0 || i1 >= img.rows || j1 < 0 || j1 >= img.cols)
+				continue;
+			//if (img.at<Vec3b>(i1, j1)[0] > 162 && img.at<Vec3b>(i1, j1)[0]< 255 && img.at<Vec3b>(i1, j1)[1] > 122 && img.at<Vec3b>(i1, j1)[1]<226 && img.at<Vec3b>(i1, j1)[2] > 136 && img.at<Vec3b>(i1, j1)[2]< 204  )
+			//{
+                            count++;
+                            cout<<img.at<Vec3b>(i1, j1)[0]<<"\n";
+			//}
+		}
+	}
+    if(count > 3)
+        return  true;
+    else return false;
+}
